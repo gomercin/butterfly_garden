@@ -1,0 +1,40 @@
+[
+  {
+    "id": "conv_1",
+    "title": "Translator Game",
+    "create_time": 1710000000,
+    "update_time": 1710001000,
+    "mapping": {
+      "node1": {
+        "message": {
+          "id": "msg1",
+          "author": {
+            "role": "user"
+          },
+          "create_time": 1710000000,
+          "content": {
+            "parts": [
+              "What if we build a translator conflict game?"
+            ]
+          }
+        },
+        "parent": null
+      },
+      "node2": {
+        "message": {
+          "id": "msg2",
+          "author": {
+            "role": "assistant"
+          },
+          "create_time": 1710000001,
+          "content": {
+            "parts": [
+              "That could become a game about knowledge gaps."
+            ]
+          }
+        },
+        "parent": "node1"
+      }
+    }
+  }
+]
