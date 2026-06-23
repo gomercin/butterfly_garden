@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.DS_Store
+.env
+
+data/inbox/*
+data/raw/*
+data/normalized/*
+data/summaries/*
+data/embeddings/*
+data/graph.sqlite
+vault/*
+!.gitkeep
