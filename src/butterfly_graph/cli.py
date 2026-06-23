@@ -12,6 +12,7 @@ from butterfly_graph.analysis.ollama import OllamaAnalyzer
 from butterfly_graph.analysis.rules import RulesAnalyzer
 from butterfly_graph.config import get_settings
 from butterfly_graph.exporters.obsidian import ObsidianExporter
+from butterfly_graph.exporters.open_notebook import OpenNotebookBundleExporter
 from butterfly_graph.importers.chatgpt import ChatGPTImporter
 from butterfly_graph.importers.gmail_mbox import GmailMboxImporter
 from butterfly_graph.importers.wordpress import WordPressWxrImporter
@@ -36,6 +37,7 @@ def init() -> None:
         Path("data/normalized"),
         Path("data/summaries"),
         Path("data/embeddings"),
+        settings.open_notebook_bundle_path,
         settings.vault_path,
     ]:
         path.mkdir(parents=True, exist_ok=True)
@@ -44,7 +46,8 @@ def init() -> None:
     console.print(
         f"[green]Initialized Butterfly Graph[/green]\n"
         f"Database: {settings.db_path}\n"
-        f"Vault: {settings.vault_path}"
+        f"Vault: {settings.vault_path}\n"
+        f"Open Notebook bundle: {settings.open_notebook_bundle_path}"
     )
 
 
@@ -83,7 +86,13 @@ def analyze(
     settings = get_settings()
     store = get_store()
     store.init_db()
-    analyzer_impl = RulesAnalyzer() if analyzer == "rules" else OllamaAnalyzer(settings.ollama_url, settings.ollama_model)
+    if analyzer == "rules":
+        analyzer_impl = RulesAnalyzer()
+    elif analyzer == "ollama":
+        analyzer_impl = OllamaAnalyzer(settings.ollama_url, settings.ollama_model)
+    else:
+        raise typer.BadParameter(f"Unknown analyzer: {analyzer}")
+
     count = 0
     for row in store.list_documents(limit=limit):
         doc = NormalizedDocument(
@@ -116,6 +125,22 @@ def export_obsidian() -> None:
     store.init_db()
     ObsidianExporter(store, settings.vault_path).export_all()
     console.print(f"[green]Exported Obsidian vault to {settings.vault_path}[/green]")
+
+
+@app.command("export-open-notebook-bundle")
+def export_open_notebook_bundle(
+    output_path: Annotated[
+        Path | None,
+        typer.Option(help="Output folder for Markdown + manifest bundle"),
+    ] = None,
+) -> None:
+    """Export a portable bundle for Open Notebook or similar local RAG tools."""
+    settings = get_settings()
+    store = get_store()
+    store.init_db()
+    target = output_path or settings.open_notebook_bundle_path
+    OpenNotebookBundleExporter(store, target).export_all()
+    console.print(f"[green]Exported Open Notebook bundle to {target}[/green]")
 
 
 @app.command()
@@ -151,9 +176,15 @@ def run_all(
     source_type: Annotated[str, typer.Option(help="chatgpt | gmail | wordpress | youtube")],
     source: Annotated[Path, typer.Option(help="Path to export file/folder")],
     analyzer: Annotated[str, typer.Option(help="rules | ollama")] = "rules",
+    include_open_notebook_bundle: Annotated[
+        bool,
+        typer.Option(help="Also export a portable Open Notebook/RAG bundle"),
+    ] = False,
 ) -> None:
     init()
     import_source(source_type, source)
     analyze(analyzer=analyzer)
     export_obsidian()
+    if include_open_notebook_bundle:
+        export_open_notebook_bundle()
     report("butterflies")
