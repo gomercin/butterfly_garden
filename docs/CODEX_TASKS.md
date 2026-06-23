@@ -16,7 +16,9 @@ butterfly export-obsidian
 butterfly report butterflies
 ```
 
-## Task 1: harden starter project
+Do not start with Open Notebook, Neo4j, a web UI, or full two-way sync.
+
+## MVP Task 1: harden starter project
 
 - Run tests locally.
 - Fix syntax/type/runtime issues.
@@ -24,7 +26,7 @@ butterfly report butterflies
 - Ensure CLI command registration works.
 - Add smoke test for `butterfly init`.
 
-## Task 2: improve ChatGPT importer
+## MVP Task 2: improve ChatGPT importer
 
 - Test with real export shape.
 - Preserve conversation/message ids.
@@ -32,7 +34,7 @@ butterfly report butterflies
 - Preserve attachments metadata if available.
 - Make re-import idempotent.
 
-## Task 3: Obsidian exporter v1
+## MVP Task 3: Obsidian exporter v1
 
 - Export stable filenames.
 - Preserve human blocks.
@@ -42,7 +44,7 @@ butterfly report butterflies
   - Echo Index
   - Personal Timeline
 
-## Task 4: local LLM analysis
+## MVP Task 4: local LLM analysis
 
 - Add chunking.
 - Improve JSON parsing.
@@ -50,14 +52,14 @@ butterfly report butterflies
 - Add retry/repair for malformed JSON.
 - Support summary, concept, and timeline prompts.
 
-## Task 5: source importers
+## MVP Task 5: source importers
 
 - Harden WordPress WXR importer.
 - Harden Gmail MBOX importer.
 - Add source group conventions.
 - Keep YouTube as experimental/noisy source.
 
-## Task 6: concept graph
+## MVP Task 6: concept graph
 
 - Generate concept records from analyses.
 - Create relations with evidence.
@@ -68,23 +70,27 @@ butterfly report butterflies
   - possible_project
   - childhood_echo
 
-## Task 7: timeline and echoes
+## MVP Task 7: timeline and echoes
 
 - Extract timeline events.
 - Support approximate dates and life periods.
 - Detect concepts appearing across distant periods.
 - Generate `40 Echoes/Echo Index.md`.
 
-## Task 8: Open Notebook experiment
-
-- Generate clean Markdown + manifest bundle.
-- Add subset selection options.
-- Compare Open Notebook/RAG output with Obsidian dashboards.
-- Keep it optional.
-
-## Task 9: future sync preparation
+## MVP Task 8: future sync preparation
 
 - Preserve generated/human markers.
 - Add parser for human-edited Markdown blocks.
 - Store human overrides.
 - Never overwrite human meaning silently.
+
+## Later Phase: output surface experiments
+
+These are deliberately not MVP tasks.
+
+- Open Notebook / local RAG bundle exporter.
+- Static HTML explorer.
+- GraphML / Neo4j export.
+- MCP-like local query server.
+
+Open Notebook is interesting, but it should come after the core import/analyze/export loop proves useful with real ChatGPT, WordPress, and Gmail exports.
